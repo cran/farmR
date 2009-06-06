@@ -1,0 +1,3 @@
+Cbc_ampl.lo Cbc_ampl.o: Cbc_ampl.cpp Cbc_ampl.h
+
+Cbc_ampl.h:

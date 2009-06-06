@@ -1,0 +1,42 @@
+JAVA_LIBS=@JAVA_LIBS@
+JAVA_CPPFLAGS=@JAVA_CPPFLAGS@
+JAVA_HOME=@JAVA_HOME@
+JAVA=@JAVA@
+JAVAC=@JAVAC@
+JAVAH=@JAVAH@
+
+# Directory with COIN header files
+COININCDIR = depends/coin-Cbc/include
+
+# Directory with COIN libraries
+COINLIBDIR = ./depends/coin-Cbc/lib/
+
+
+CXX=@CXX@
+
+GLPKINCDIR=.
+
+# Directory with COIN header files
+COININCDIR = depends/coin-Cbc/include
+
+# Directory with COIN libraries
+COINLIBDIR = depends/coin-Cbc/lib/
+
+
+PKG_CXXFLAGS+=-Iinclude @JAVA_CPPFLAGS@ -I$(COININCDIR) -I$(GLPKINCDIR)
+
+RINSTDIR=../inst/
+LIBSINSTDIR=$(R_LIBRARY_DIR)/farmR/libs/
+
+JARDIR = $(RINSTDIR)/java
+JNIINSTDIR=$(LIBSINSTDIR)/@ARCHFLAG@/
+
+
+
+PKG_LIBS=-L$(COINLIBDIR) -lCbc -lCgl -lOsiClp -lOsiCbc -lOsi -lClp -lCoinUtils 
+
+SUBDIRSCBC = depends/coin-Cbc/
+
+FARMLP_LIB=@JNIPREFIX@farmR@JNISO@
+
+include Makevars.@PLATFORM@

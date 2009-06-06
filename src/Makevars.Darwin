@@ -1,0 +1,43 @@
+
+OBJECTS = 
+
+glpobjects := $(patsubst %.c,%.o,$(wildcard *.c))
+
+.PHONY: all farmlib
+
+all: $(SHLIB) 
+$(SHLIB): farmlib
+	
+
+farmlib: $(glpobjects) cbcpeer.o glpkpeer.o glpkjni.o cbcjni.o
+	$(CXX) -Q -bundle -Wl,-headerpad_max_install_names -mmacosx-version-min=10.4 -undefined dynamic_lookup -single_module -multiply_defined suppress $(JAVA_LIBS) $(JAVA_CPPFLAGS) -o $(FARMLP_LIB) $(PKG_LIBS) -llapack -lblas -lm cbcpeer.o cbcjni.o glpkjni.o glpkpeer.o $(glpobjects)
+	mkdir -p $(JNIINSTDIR)
+	cp $(FARMLP_LIB) $(JNIINSTDIR)
+
+
+javajar:
+	ant -buildfile java/build.xml install
+
+jfm_lp_CBCPeer.h:	./java/src/jfm/lp/CBCPeer.java javajar 
+	javah -jni -classpath $(JARDIR)/javawfm.jar jfm.lp.CBCPeer
+
+jfm_lp_GLPKPeer.h: ./java/src/jfm/lp/GLPKPeer.java javajar 
+	javah -jni -classpath $(JARDIR)/javawfm.jar jfm.lp.GLPKPeer
+
+glpkjni.o: glpkjni.cpp jfm_lp_GLPKPeer.h subdirs
+	$(CXX) -c $< $(PKG_CXXFLAGS)
+
+glpkpeer.o: glpkpeer.cpp jfm_lp_GLPKPeer.h subdirs
+	$(CXX) -c $< $(PKG_CXXFLAGS)
+
+cbcpeer.o: cbcpeer.cpp jfm_lp_CBCPeer.h subdirs
+	$(CXX) -c $< $(PKG_CXXFLAGS)
+
+cbcjni.o: cbcjni.cpp jfm_lp_CBCPeer.h subdirs
+	$(CXX) -c $< $(PKG_CXXFLAGS)
+
+subdirs:
+	$(MAKE) install -C $(SUBDIRSCBC)
+
+clean:
+	$(MAKE) clean -C $(SUBDIRSCBC)
