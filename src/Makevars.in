@@ -4,12 +4,12 @@ JAVA_HOME=@JAVA_HOME@
 JAVA=@JAVA@
 JAVAC=@JAVAC@
 JAVAH=@JAVAH@
-
+HAVECBC=@HAVECBC@
 # Directory with COIN header files
-COININCDIR = depends/coin-Cbc/include
+#COININCDIR = depends/coin-Cbc/include
 
 # Directory with COIN libraries
-COINLIBDIR = ./depends/coin-Cbc/lib/
+#COINLIBDIR = ./depends/coin-Cbc/lib/
 
 
 CXX=@CXX@
@@ -17,10 +17,12 @@ CXX=@CXX@
 GLPKINCDIR=.
 
 # Directory with COIN header files
+ifeq ($(HAVECBC),yes)
 COININCDIR = depends/coin-Cbc/include
 
 # Directory with COIN libraries
 COINLIBDIR = depends/coin-Cbc/lib/
+endif
 
 
 PKG_CXXFLAGS+=-Iinclude @JAVA_CPPFLAGS@ -I$(COININCDIR) -I$(GLPKINCDIR)
@@ -32,11 +34,19 @@ JARDIR = $(RINSTDIR)/java
 JNIINSTDIR=$(LIBSINSTDIR)/@ARCHFLAG@/
 
 
-
+ifeq ($(HAVECBC),yes)
 PKG_LIBS=-L$(COINLIBDIR) -lCbc -lCgl -lOsiClp -lOsiCbc -lOsi -lClp -lCoinUtils 
+else
+PKG_LIBS=
+endif
 
-SUBDIRSCBC = depends/coin-Cbc/
+
 
 FARMLP_LIB=@JNIPREFIX@farmR@JNISO@
 
+ifeq ($(HAVECBC),yes)
+SUBDIRSCBC = depends/coin-Cbc/
 include Makevars.@PLATFORM@
+else
+include Makevars.@PLATFORM@.nocbc
+endif

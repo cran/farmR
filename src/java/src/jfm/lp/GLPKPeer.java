@@ -87,10 +87,10 @@ final class GLPKPeer extends LPPeer {
 	/** Load native LPX solving library */
 	static {
 //		System.out.println("Loading native library");
-//		String jlpath = System.getProperty("java.library.path");
-//		System.out.println(jlpath);
+		String jlpath = System.getProperty("java.library.path");
+		System.out.println(jlpath);
 		System.loadLibrary("farmR");		
-//		System.out.println("Loaded");
+		System.out.println("Loaded");
 	}
 }
 

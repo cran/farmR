@@ -176,13 +176,16 @@ if test -z `echo ${R_ARCH}`; then
 	R_ARCH=/`uname -m`;
 fi
 
-case "${R_ARCH}" in /i386*)
+case "${R_ARCH}" 
+	in /i386)
 	ARCHFLAG=i386 ;;
+	/x86_64)
+	ARCHFLAG=x86_64;;
 	*) ARCHFLAG=ppc 
 	;;
-esac
-AC_SUBST(ARCHFLAG)
+esac	
 
+AC_SUBST(ARCHFLAG)
 
 
 (echo $host_os)
@@ -197,28 +200,35 @@ case "${host_os}" in
 	(echo "Configuring ")
 	(echo $ARCHFLAG)
 
-	(echo "Configuring coin-Cbc")
-	(cd src/depends/coin-Cbc/ && \
-		./configure \
-		--enable-static --disable-shared --with-pic ADD_CXXFLAGS="-arch $ARCHFLAG" ADD_CFLAGS="-arch $ARCHFLAG ")
 
-	(echo "Done configuring coin-CBC")
+	if test -f ./src/depends/coin-Cbc; then
+		(echo "Configuring coin-Cbc")
+		(cd src/depends/coin-Cbc/ && \
+			./configure \
+			--enable-static --disable-shared --with-pic ADD_CXXFLAGS="-arch $ARCHFLAG" ADD_CFLAGS="-arch $ARCHFLAG ")
+
+		(echo "Done configuring coin-CBC")
+		HAVECBC=yes
+	else
+		(echo "No Coin-Cbc libraries")
+		HAVECBC=no
+	fi
+
 	;;
 *)
 	# On all systems other than darwinassume that configure can guess the architecture appropriately. 
 	(echo "Configuring ")
 	PLATFORM=linux
 
-	(echo "Configuring coin-Cbc")
-	(cd src/depends/coin-Cbc/ && \
-		./configure \
-		--enable-static --disable-shared --with-pic)
+#	(echo "Configuring coin-Cbc")
+#	(cd src/depends/coin-Cbc/ && \
+#		./configure \
+#		--enable-static --disable-shared --with-pic)
 
-	(echo "Done configuring coin-CBC")
+#	(echo "Done configuring coin-CBC")
 	;;
 esac
-
-
+AC_SUBST(HAVECBC)
 AC_SUBST(PLATFORM)
 
 # Checks for library functions.

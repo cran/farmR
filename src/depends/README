@@ -13,10 +13,15 @@ a relatively old version. A bug has been introduced with version 2.3 so use 2.0 
 
 svn co https://projects.coin-or.org/svn/Cbc/stable/2.0 ./coin-Cbc
 
+- Now copy the files contained in ./cbcwrappers into the parent src directory using
+cp ./cbcwrappers/* ../
+
 glpk:
 - To fulfil the dependency on glpk, first get a tarball of version 4.39 from the glpk web page http://www.gnu.org/software/glpk/
 - From within this directory (ie farmR/src/depends/) unpack the archive as follows
 
 tar -xvf glpk-4.39.tar 
+
+
 
 

@@ -1,0 +1,8 @@
+
+.PHONY: all 
+
+
+all: jfm_lp_GLPKPeer.h
+
+jfm_lp_GLPKPeer.h: ./java/src/jfm/lp/GLPKPeer.java 
+	javah -jni -classpath $(JARDIR)/javawfm.jar jfm.lp.GLPKPeer

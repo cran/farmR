@@ -684,6 +684,7 @@ JAVAC
 JAVAH
 GLPKINSTDIR
 ARCHFLAG
+HAVECBC
 LIBOBJS
 LTLIBOBJS'
 ac_subst_files=''
@@ -4418,11 +4419,23 @@ if test -z `echo ${R_ARCH}`; then
 	R_ARCH=/`uname -m`;
 fi
 
-case "${R_ARCH}" in /i386*)
+case "${R_ARCH}"
+	in /i386)
 	ARCHFLAG=i386 ;;
+	/x86_64)
+	ARCHFLAG=x86_64;;
 	*) ARCHFLAG=ppc
 	;;
 esac
+
+#if test ${R_ARCH} = "/i386"; then
+#	R_ARCH=i386
+#else if test ${R_ARCH} = "/x86_64"; then
+#	R_ARCH=x86_64
+#else
+#	R_ARCH=ppc
+#fi
+
 
 
 
@@ -4439,27 +4452,34 @@ case "${host_os}" in
 	(echo "Configuring ")
 	(echo $ARCHFLAG)
 
-	(echo "Configuring coin-Cbc")
-	(cd src/depends/coin-Cbc/ && \
-		./configure \
-		--enable-static --disable-shared --with-pic ADD_CXXFLAGS="-arch $ARCHFLAG" ADD_CFLAGS="-arch $ARCHFLAG ")
 
-	(echo "Done configuring coin-CBC")
+	if test -f ./src/depends/coin-Cbc; then
+		(echo "Configuring coin-Cbc")
+		(cd src/depends/coin-Cbc/ && \
+			./configure \
+			--enable-static --disable-shared --with-pic ADD_CXXFLAGS="-arch $ARCHFLAG" ADD_CFLAGS="-arch $ARCHFLAG ")
+
+		(echo "Done configuring coin-CBC")
+		HAVECBC=yes
+	else
+		(echo "No Coin-Cbc libraries")
+		HAVECBC=no
+	fi
+
 	;;
 *)
 	# On all systems other than darwinassume that configure can guess the architecture appropriately.
 	(echo "Configuring ")
 	PLATFORM=linux
 
-	(echo "Configuring coin-Cbc")
-	(cd src/depends/coin-Cbc/ && \
-		./configure \
-		--enable-static --disable-shared --with-pic)
+#	(echo "Configuring coin-Cbc")
+#	(cd src/depends/coin-Cbc/ && \
+#		./configure \
+#		--enable-static --disable-shared --with-pic)
 
-	(echo "Done configuring coin-CBC")
+#	(echo "Done configuring coin-CBC")
 	;;
 esac
-
 
 
 
@@ -5151,11 +5171,12 @@ JAVAC!$JAVAC$ac_delim
 JAVAH!$JAVAH$ac_delim
 GLPKINSTDIR!$GLPKINSTDIR$ac_delim
 ARCHFLAG!$ARCHFLAG$ac_delim
+HAVECBC!$HAVECBC$ac_delim
 LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 71; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 72; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

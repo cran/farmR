@@ -65,7 +65,7 @@ osxjPackage<-function(name,jars="*"){
 	}
 	# Define global package variables
 	.packageGlobals$supportedSolvers<-c("cbc","glpk")
-	.packageGlobals$defaultSolver<-"cbc"	
+	.packageGlobals$defaultSolver<-"glpk"	
 }
 
 setClass("FarmRepresentation")
